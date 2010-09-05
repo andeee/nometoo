@@ -37,7 +37,7 @@ function PlaylistWriter(playlistName) {
 	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
 	this.createPlaylist = function() {
 		if (playlistName) {
-			playlistFile = fileSystem.CreateTextFile(getDestination() + "Playlists\\" + playlistName + ".m3u", true);
+			playlistFile = fileSystem.CreateTextFile(getDestination() + "..\\Playlists\\" + playlistName + ".m3u", true);
 			playlistFile.WriteLine("#EXTM3U");
 		}
 	};
