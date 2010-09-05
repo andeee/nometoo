@@ -1,3 +1,10 @@
+if(!iTunes) {
+	var iTunes = WScript.CreateObject("iTunes.Application");
+}
+if(!fileSystem) {
+	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
+}
+
 copy(selectedTracks() || selectedPlaylist());
 
 function copy(playlist) {
@@ -13,14 +20,12 @@ function copy(playlist) {
 }
 
 function selectedTracks() {
-	var iTunes = WScript.CreateObject("iTunes.Application");
 	if (iTunes.SelectedTracks) {
 		return { tracks: iTunes.SelectedTracks };
 	}
 }
 
 function selectedPlaylist() {
-	var iTunes = WScript.CreateObject("iTunes.Application");
 	var selectedPlaylist = iTunes.BrowserWindow.SelectedPlaylist
 	if (selectedPlaylist) {
 		return { tracks: selectedPlaylist.Tracks, name: selectedPlaylist.Name };
@@ -49,14 +54,12 @@ function PlaylistWriter(playlistName) {
 };
 
 function copyTrack(track) {
-	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
 	if(!fileSystem.fileExists(getTrackDestination(getDestination(), track))) {
 		fileSystem.CopyFile(track.location, createAndBuildTrackPath(getDestination(), track, createTrackFolderIfNotExists), true);
 	}
 }
 
 function createAndBuildTrackPath(basePath, track, creatorFunction) {
-	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
 	var artistPath = fileSystem.BuildPath(basePath, track.Artist)
 	creatorFunction(artistPath);
 	var albumPath = fileSystem.BuildPath(artistPath, track.Album)
@@ -65,7 +68,6 @@ function createAndBuildTrackPath(basePath, track, creatorFunction) {
 }
 
 function createTrackFolderIfNotExists(path) {
-	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
 	if (!fileSystem.FolderExists(path)) {
 		fileSystem.CreateFolder(path);
 	}
@@ -79,7 +81,6 @@ function getDestination() {
 }
 
 function getTrackDestination(basePath, track) {
-	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
 	var trackFile = fileSystem.GetFilename(track.location);
 	return fileSystem.BuildPath(createAndBuildTrackPath(basePath, track, noOp), trackFile);
 }
