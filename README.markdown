@@ -13,10 +13,10 @@ What you need:
 
 Usage:
 ------
-0. Setup the registry key for the destination folder (see CopySelectedTracks.js)
-1. Select the tracks or the playlist you want to copy.
-2. Launch the script.
-3. Wait until it displays "Habe fertig!"
+1. Setup the registry key for the destination folder (see CopySelectedTracks.js)
+2. Select the tracks or the playlist you want to copy.
+3. Launch the script.
+4. Wait until it displays "Habe fertig!"
 
 Restrictions:
 -------------
@@ -29,8 +29,7 @@ My first try is a little rough around the edges:
 
 The story behind it:
 --------------------
+
 Ovi Music on Windows is too bloated and slow for me and since I already use iTunes I didn't want yet another music library manager.
-
 I would appreciate if Nokia would port it's Multimedia Transfer from Mac to Windows, but since that didn't happen yet and I'm very impatient I started this little helper script.
-
 The "NO ME TOO" is a tribute to Nokia Multimedia Transfer... Yes I am very creative!  
