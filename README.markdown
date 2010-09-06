@@ -14,6 +14,7 @@ What you need:
 Restrictions:
 -------------
 My first try is a little rough around the edges:
+
 *  It reads the destination path from the registry
 *  Only displays a stupid german message when it's finished copying
 *  No tests (very bad, one of the first things I will fix)
