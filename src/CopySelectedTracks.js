@@ -8,6 +8,9 @@ if(!fileSystem) {
 copy(selectedTracks() || selectedPlaylist());
 
 function copy(playlist) {
+	if(!playlist) {
+		return;
+	}
 	var playlistWriter = new PlaylistWriter(playlist.name);
 	playlistWriter.createPlaylist();
 	for (var i = 1; i <= playlist.tracks.Count; i++) {
@@ -34,7 +37,6 @@ function selectedPlaylist() {
 
 function PlaylistWriter(playlistName) {
 	var playlistFile;
-	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
 	this.createPlaylist = function() {
 		if (playlistName) {
 			playlistFile = fileSystem.CreateTextFile(getDestination() + "..\\Playlists\\" + playlistName + ".m3u", true);
