@@ -29,7 +29,7 @@ function selectedTracks() {
 }
 
 function selectedPlaylist() {
-	var selectedPlaylist = iTunes.BrowserWindow.SelectedPlaylist
+	var selectedPlaylist = iTunes.BrowserWindow.SelectedPlaylist;
 	if (selectedPlaylist) {
 		return { tracks: selectedPlaylist.Tracks, name: selectedPlaylist.Name };
 	}
@@ -62,9 +62,9 @@ function copyTrack(track) {
 }
 
 function createAndBuildTrackPath(basePath, track, creatorFunction) {
-	var artistPath = fileSystem.BuildPath(basePath, track.Artist)
+	var artistPath = fileSystem.BuildPath(basePath, track.Artist);
 	creatorFunction(artistPath);
-	var albumPath = fileSystem.BuildPath(artistPath, track.Album)
+	var albumPath = fileSystem.BuildPath(artistPath, track.Album);
 	creatorFunction(albumPath);
 	return albumPath + "\\";
 }

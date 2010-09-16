@@ -1,18 +1,6 @@
 JsHamcrest.Integration.QUnit();
 JsMockito.Integration.QUnit();
 
-var iTunes = {};
-iTunes.BrowserWindow = {};
-var fileSystem = {};
-
-module("playlistWriter");
-
-var file = {
-	content : "",
-	WriteLine : function(line) {
-		this.content += line;
-	}
-};
 var track = {
 	Artist : "Disturbed",
 	Album : "Asylum",
@@ -20,14 +8,33 @@ var track = {
 	Location : "c:\\test\\04 - Another Way To Die.mp3"
 };
 
-test("write track to playlist", function() {
-	var myPlaylistWriter = playlistWriter(file);
-	myPlaylistWriter.write(track);
-	assertThat(file.content,
-			is(equalTo("e:\\Disturbed\\Asylum\\04 - Another Way To Die.mp3")));
-});
+var collectionFromArray = function(array) {
+	return {
+		Item : function(i) {
+			return array[i - 1];
+		},
+		Count : array.length
+	};
+};
 
-test("don't write track if no file given", function() {
-	var myPlaylistWriter = playlistWriter(undefined);
-	myPlaylistWriter.write(track);
+var iTunes = {};
+iTunes.BrowserWindow = {};
+iTunes.SelectedTracks = collectionFromArray( [ track ]);
+var fileSystem = {
+	copied : [],
+	CopyFile : function(src, dest) {
+		this.copied.push( {
+			source : src,
+			destination : dest
+		});
+	}
+};
+
+module("playlistWriter");
+
+test("copies selected tracks from iTunes to destination", function() {
+	copy(selectedTracksFrom(iTunes), "f:", fileSystem);
+	assertThat(fileSystem.copied.length, is(1));
+	assertThat(fileSystem.copied[0].source, is(track.Location));
+	assertThat(fileSystem.copied[0].destination, is("f:\\Disturbed\\Asylum"));
 });

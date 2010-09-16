@@ -1,19 +1,26 @@
-var playlistWriter = function(playlistFile) {
-	var getTrackDestination = function(basePath, track) {
-		trackFilenameRegex = /^.*\\(.*)$/;
-		trackFilename = trackFilenameRegex.exec(track.Location)[1];
-		return basePath + "\\" + track.Artist + "\\" + track.Album + "\\"
-				+ trackFilename;
+if (!iTunes) {
+	var iTunes = WScript.CreateObject("iTunes.Application");
+}
+
+if (!fileSystem) {
+	var fileSystem = WScript.CreateObject("Scripting.FileSystemObject");
+}
+
+var copy = function(tracks, destination, fileSystem) {
+	var copyTrack = function(track) {
+		fileSystem.CopyFile(track.Location, buildTrackFolder(track), true);
 	};
-	return {
-		write : function(track) {
-			if (playlistFile) {
-				playlistFile.WriteLine(getTrackDestination("e:", track));
-			}
-		}
+
+	var buildTrackFolder = function(track) {
+		return destination + "\\" + track.Artist + "\\" + track.Album;
 	};
+
+	for ( var i = 1; i <= tracks.Count; i++) {
+		var track = tracks.Item(i);
+		copyTrack(track);
+	}
 };
 
-var playlist = function(fileSystem, playlistName) {
-	return {};
+var selectedTracksFrom = function(musicLibrary) {
+	return musicLibrary.SelectedTracks;
 };
