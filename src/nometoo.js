@@ -5,8 +5,8 @@ var copyPlaylist = function(playlist, destination, playlistDestination, deviceAl
 }
 
 var makePlaylistWriter = function(playlist, playlistDestination, deviceAlias, fileSystem) {
-    var playlistFile = fileSystem.CreateTextFile(playlistDestination + "\\" + playlist.Name + ".m3u");
-    playlistFile.WriteLine("#EXTM3U");
+    var playlistStream = fileSystem.CreateTextFile(playlistDestination + "\\" + playlist.Name + ".m3u");
+    playlistStream.WriteLine("#EXTM3U");
 
     var extractBaseName = function(location) {
 	return location.substring(location.lastIndexOf("\\") + 1, location.length);
@@ -14,10 +14,10 @@ var makePlaylistWriter = function(playlist, playlistDestination, deviceAlias, fi
 
     return {
 	writeTrack: function(track) {
-	    playlistFile.WriteLine(buildTrackFolder(deviceAlias, track) + "\\" + extractBaseName(track.Location));
+	    playlistStream.WriteLine(buildTrackFolder(deviceAlias, track) + "\\" + extractBaseName(track.Location));
 	},
 	close: function() {
-	    playlistFile.Close();
+	    playlistStream.Close();
 	}
     };
 }
@@ -26,7 +26,7 @@ var buildTrackFolder = function(destination, track) {
     return destination + "\\" + track.Artist + "\\" + track.Album;
 };
 
-var copy = function(tracks, destination, fileSystem, playlistFile) {
+var copy = function(tracks, destination, fileSystem, playlistWriter) {
     var copyTrack = function(track) {
 	fileSystem.CopyFile(track.Location, buildTrackFolder(destination, track), true);
     };
@@ -34,8 +34,8 @@ var copy = function(tracks, destination, fileSystem, playlistFile) {
     for ( var i = 1; i <= tracks.Count; i++) {
 	var track = tracks.Item(i);
 	copyTrack(track);
-	if(playlistFile) {
-	    playlistFile.writeTrack(track);
+	if(playlistWriter) {
+	    playlistWriter.writeTrack(track);
 	}
     }
 };

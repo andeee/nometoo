@@ -49,7 +49,7 @@ var makeFileSystem = function() {
     };
 };
 
-module("playlistWriter");
+module("track copying");
 
 test("copies selected tracks from iTunes to destination", function() {
     var fileSystem = makeFileSystem();
@@ -58,6 +58,8 @@ test("copies selected tracks from iTunes to destination", function() {
     assertThat(fileSystem.copied[0].source, is(track.Location));
     assertThat(fileSystem.copied[0].destination, is("f:\\Disturbed\\Asylum"));
 });
+
+module("playlist writing");
 
 test("creates playlist of selected playlist from iTunes", function() {
     var fileSystem = makeFileSystem();
