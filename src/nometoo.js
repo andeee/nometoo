@@ -42,7 +42,7 @@ var createFolderIfNotExists = function(fileSystem, folder) {
     if (!(fileSystem.FolderExists(folder))) {
 	var parentFolder = fileSystem.GetParentFolderName(folder);
 	if (!(fileSystem.FolderExists(parentFolder))) {
-	    createFolderIfNotExists(parentFolder);
+	    createFolderIfNotExists(fileSystem, parentFolder);
 	} else {
 	    fileSystem.CreateFolder(folder);
 	}
