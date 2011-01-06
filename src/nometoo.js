@@ -39,12 +39,12 @@ var makeCopyFn = function(destination, fileSystem, shell) {
 };
 
 var createFolderIfNotExists = function(fileSystem, folder) {
-    if (!fileSystem.FolderExists(folder)) {
+    if (!(fileSystem.FolderExists(folder))) {
 	var parentFolder = fileSystem.GetParentFolderName(folder);
-	if (!fileSystem.FolderExists(parentFolder)) {
+	if (!(fileSystem.FolderExists(parentFolder))) {
 	    createFolderIfNotExists(parentFolder);
 	} else {
-	    fileSystem.createFolder(folder);
+	    fileSystem.CreateFolder(folder);
 	}
     }
 }
