@@ -25,23 +25,36 @@ var buildTrackFolder = function(destination, track) {
 
 var makeCopyFn = function(destination, fileSystem, shell) {
     return function(track) {
+	var destFolder = buildTrackFolder(destination, track)
+	createFolderIfNotExists(fileSystem, destFolder);
 	if (track.Location.toLowerCase().indexOf("m4a") == -1) {
-	    fileSystem.CopyFile(track.Location, buildTrackFolder(destination, track), true);
+	    fileSystem.CopyFile(track.Location, destFolder, true);
 	    return extractBaseName(track.Location);
 	} else {
-	    var dest = makeMp3Filename(destination, track);
+	    var dest = makeMp3Filename(destFolder, track);
 	    shell.Run("ffmpeg -i \"" + track.Location + "\" -acodec libmp3lame -ac 2 -ab 256000 \"" + dest + "\" -map_meta_data \"" + dest + "\":\"" + track.Location + "\"", 0, true);
 	    return extractBaseName(dest);
 	}
     };
 };
 
+var createFolderIfNotExists = function(fileSystem, folder) {
+    if (!fileSystem.FolderExists(folder)) {
+	var parentFolder = fileSystem.GetParentFolderName(folder);
+	if (!fileSystem.FolderExists(parentFolder)) {
+	    createFolderIfNotExists(parentFolder);
+	} else {
+	    fileSystem.createFolder(folder);
+	}
+    }
+}
+
 var extractBaseName = function(location) {
     return location.substring(location.lastIndexOf("\\") + 1, location.length);
 };
 
-var makeMp3Filename = function(destination, track) {
-    var mp3File = buildTrackFolder(destination, track) + "\\" + extractBaseName(track.Location);
+var makeMp3Filename = function(destFolder, track) {
+    var mp3File = destFolder + "\\" + extractBaseName(track.Location);
     return mp3File.substring(0, mp3File.length - 3) + "mp3";
 };
 

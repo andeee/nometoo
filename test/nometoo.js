@@ -51,6 +51,9 @@ var makeFileSystem = function() {
 		source : src,
 		destination : dest
 	    });
+	},
+	FolderExists: function(folder) {
+	    return true;
 	}
     };
 };

@@ -5,8 +5,8 @@ var destDev = shell.RegRead("HKCU\\Software\\nometoo\\Destination");
 var playlistDest = shell.RegRead("HKCU\\Software\\nometoo\\PlaylistDestination");
 var devAlias = shell.RegRead("HKCU\\Software\\nometoo\\DeviceAlias");
 
-if (selectedPlaylistFrom(iTunes)) {
-    copyPlaylist(selectedPlaylistFrom(iTunes), destDev, playlistDest, devAlias, fileSystem, shell);
-} else {
+if (selectedTrackFrom(iTunes)) {
     copy(selectedTracksFrom(iTunes), makeCopyFn(destDev, fileSystem, shell));
+} else {
+    copyPlaylist(selectedPlaylistFrom(iTunes), destDev, playlistDest, devAlias, fileSystem, shell);
 }
