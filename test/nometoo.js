@@ -76,7 +76,7 @@ test("copies selected tracks from iTunes to destination", function() {
     copy(selectedTracksFrom(iTunes), copyFn);
     assertThat(fileSystem.copied.length, is(1));
     assertThat(fileSystem.copied[0].source, is(track.Location));
-    assertThat(fileSystem.copied[0].destination, is("f:\\Disturbed\\Asylum"));
+    assertThat(fileSystem.copied[0].destination, is("f:\\Disturbed\\Asylum\\"));
 });
 
 test("transcodes aac track from iTunes to destination", function() {
@@ -104,7 +104,7 @@ test("copies playlist tracks of selected playlist from iTunes", function() {
     copyPlaylist(selectedPlaylistFrom(iTunes), "f:", "f:\\Playlists", "e:", fileSystem, shell);
     assertThat(fileSystem.copied.length, is(1));
     assertThat(fileSystem.copied[0].source, is(track.Location));
-    assertThat(fileSystem.copied[0].destination, is("f:\\Disturbed\\Asylum"));    
+    assertThat(fileSystem.copied[0].destination, is("f:\\Disturbed\\Asylum\\"));    
 });
 
 test("writes tracks to Playlist", function () {

@@ -28,7 +28,7 @@ var makeCopyFn = function(destination, fileSystem, shell) {
 	var destFolder = buildTrackFolder(destination, track)
 	createFolderIfNotExists(fileSystem, destFolder);
 	if (track.Location.toLowerCase().indexOf("m4a") == -1) {
-	    fileSystem.CopyFile(track.Location, destFolder, true);
+	    fileSystem.CopyFile(track.Location, destFolder + "\\", true);
 	    return extractBaseName(track.Location);
 	} else {
 	    var dest = makeMp3Filename(destFolder, track);
