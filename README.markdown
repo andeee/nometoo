@@ -14,7 +14,7 @@ What you need:
 Usage:
 ------
 src/nometoo.js has some function which when correctly assembled will copy the files from iTunes to a destination
-see test/nomeetoo.js for examples
+see test/nometoo.js and src/nometoo-starter.js for examples
 
 The story behind it:
 --------------------

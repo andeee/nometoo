@@ -1,0 +1,4 @@
+<job id="nometoo">
+  <script language="JScript" src="nometoo.js" />
+  <script language="JScript" src="nometoo-starter.js" />
+</job>
