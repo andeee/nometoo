@@ -32,7 +32,7 @@ var makeCopyFn = function(destination, fileSystem, shell) {
 	    return extractBaseName(track.Location);
 	} else {
 	    var dest = makeMp3Filename(destFolder, track);
-	    shell.Run("ffmpeg -i -y \"" + track.Location + "\" -acodec libmp3lame -ac 2 -ab 256000 \"" + dest + "\" -map_meta_data \"" + dest + "\":\"" + track.Location + "\"", 0, true);
+	    shell.Run("ffmpeg -i \"" + track.Location + "\" -y -acodec libmp3lame -ac 2 -ab 256000 \"" + dest + "\" -map_meta_data \"" + dest + "\":\"" + track.Location + "\"", 0, true);
 	    return extractBaseName(dest);
 	}
     };
