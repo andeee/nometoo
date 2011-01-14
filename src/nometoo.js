@@ -23,10 +23,13 @@ var buildTrackFolder = function(destination, track) {
     return destination + "\\" + track.Artist + "\\" + track.Album;
 };
 
-var makeCopyFn = function(destination, fileSystem, shell) {
+var makeCopyFn = function(destination, fileSystem, shell, logger) {
     return function(track) {
-	var destFolder = buildTrackFolder(destination, track)
+	var destFolder = destination;
 	createFolderIfNotExists(fileSystem, destFolder);
+	if (logger) {
+	    logger(track);
+	}	    
 	if (track.Location.toLowerCase().indexOf("m4a") == -1) {
 	    fileSystem.CopyFile(track.Location, destFolder + "\\", true);
 	    return extractBaseName(track.Location);
