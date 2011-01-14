@@ -9,7 +9,8 @@ var logger = function(track) {
     document.getElementById("progress").innerHtml = "kopiere " + track.Location;
 };
 
-var startCopy = function(form) {
+var startCopy = function() {
+    var form = document.getElementById("copyForm");
     copy(selectedTracksFrom(iTunes), makeCopyFn(destDev + "\\" + form.trackFolder.value, fileSystem, shell, logger));
 };
 
