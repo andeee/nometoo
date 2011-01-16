@@ -1,12 +1,24 @@
 <html>
   <head>
+    <title>nometoo</title>
+    <hta:application innerBorder="no" applicationName="nometoo"
+		     singleInstance="yes" icon="nometoo.ico"
+		     contextMenu="no" maximizeButton="no"
+		     scroll="no" />
+    <script type="text/javascript" src="jquery-1.4.4.js"></script>
     <script type="text/javascript" src="nometoo.js"></script>
     <script type="text/javascript" src="nometoo-starter.js"></script>
   </head>
   <body>
-    <form method="POST" id="copyForm" onsubmit="startCopy()" action="#">
-      <input type="text" name="targetFolder" value="" />
-      <input type="submit" name="startCopy" value="Kopieren starten" />
+    <form method="POST" id="copyForm" action="#">
+      <fieldset>
+	<label for="targetFolder">Zielordner</label>
+	<input type="text" id="targetFolder" name="targetFolder"
+	value="" />
+	<input type="button" id="browseForFolder"
+	name="browseForFolder" value="Ordner suchen" />
+     </fieldset>
+      <input type="submit" id="startCopy" value="Kopieren starten" />
     </form>
     <div id="progress"></div>
   </body>

@@ -1,16 +1,31 @@
-var iTunes = new ActiveXObject("iTunes.Application");
-var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
-var shell = new ActiveXObject("WScript.Shell");
-var destDev = shell.RegRead("HKCU\\Software\\nometoo\\Destination");
-var playlistDest = shell.RegRead("HKCU\\Software\\nometoo\\PlaylistDestination");
-var devAlias = shell.RegRead("HKCU\\Software\\nometoo\\DeviceAlias");
+$(function() {
+    var iTunes = new ActiveXObject("iTunes.Application");
+    var fileSystem = new ActiveXObject("Scripting.FileSystemObject");
+    var shell = new ActiveXObject("WScript.Shell");
 
-var logger = function(track) {
-    document.getElementById("progress").innerHtml = "kopiere " + track.Location;
-};
+    var observer = {
+	onCopy: function(i, count, track) {
+	    $("#progress").html("kopiere " + track.Location);
+	},
+	onFinish: function() {
+	    $("#progress").html("kopieren abgeschlossen!");
+	}
+    };
 
-var startCopy = function() {
-    var form = document.getElementById("copyForm");
-    copy(selectedTracksFrom(iTunes), makeCopyFn(destDev + "\\" + form.trackFolder.value, fileSystem, shell, logger));
-};
+    var startCopy = function(targetFolder) {
+	copy(selectedTracksFrom(iTunes), makeCopyFn(targetFolder, fileSystem, shell), observer);
+    };
 
+    $("#copyForm").submit(function(e) {
+	e.preventDefault();
+	startCopy($("#targetFolder").val());
+    });
+
+    $("#browseForFolder").click(function(e) {
+	var shellApp = new ActiveXObject("Shell.Application");
+	var folder = shellApp.BrowseForFolder(0, "Zielordner wählen", 1);
+	if (folder) {
+	    $("#targetFolder").val(folder.Self.Path);
+	}
+    });
+});

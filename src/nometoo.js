@@ -1,42 +1,15 @@
-var copyPlaylist = function(playlist, destination, playlistDestination, deviceAlias, fileSystem, shell) {
-    var playlistWriter = makePlaylistWriter(playlist, playlistDestination, deviceAlias, fileSystem);
-    var copyFn = makeCopyFn(destination, fileSystem, shell);
-    copy(playlist.Tracks, copyFn, playlistWriter);
-    playlistWriter.close();
-};
-
-var makePlaylistWriter = function(playlist, playlistDestination, deviceAlias, fileSystem) {
-    var playlistStream = fileSystem.CreateTextFile(playlistDestination + "\\" + playlist.Name + ".m3u");
-    playlistStream.WriteLine("#EXTM3U");
-
-    return {
-	writeTrack: function(track, destFileBaseName) {
-	    playlistStream.WriteLine(buildTrackFolder(deviceAlias, track) + "\\" + destFileBaseName);
-	},
-	close: function() {
-	    playlistStream.Close();
-	}
-    };
-};
-
-var buildTrackFolder = function(destination, track) {
-    return destination + "\\" + track.Artist + "\\" + track.Album;
-};
-
-var makeCopyFn = function(destination, fileSystem, shell, logger) {
-    return function(track) {
-	var destFolder = destination;
-	createFolderIfNotExists(fileSystem, destFolder);
-	if (logger) {
-	    logger(track);
-	}	    
-	if (track.Location.toLowerCase().indexOf("m4a") == -1) {
-	    fileSystem.CopyFile(track.Location, destFolder + "\\", true);
-	    return extractBaseName(track.Location);
-	} else {
-	    var dest = makeMp3Filename(destFolder, track);
-	    shell.Run("ffmpeg -i \"" + track.Location + "\" -y -acodec libmp3lame -ac 2 -ab 256000 \"" + dest + "\" -map_meta_data \"" + dest + "\":\"" + track.Location + "\"", 0, true);
-	    return extractBaseName(dest);
+var makeCopyFn = function(destination, fileSystem, shell) {
+    return function(trackSeq) {
+	if (trackSeq) {
+	    createFolderIfNotExists(fileSystem, destination);
+	    var track = trackSeq.first();
+	    var destFile = makeDestFileName(destination, track, trackSeq.index());
+	    if (track.Location.toLowerCase().indexOf("mp3") > -1) {
+		fileSystem.CopyFile(track.Location, destFile, true);
+	    } else {
+		shell.Run("ffmpeg -i \"" + track.Location + "\" -y -acodec libmp3lame -ac 2 -ab 256000 \"" + destFile + "\" -map_meta_data \"" + destFile + "\":\"" + track.Location + "\"", 0, true);
+	    }
+	    arguments.callee(trackSeq.rest());
 	}
     };
 };
@@ -49,25 +22,57 @@ var createFolderIfNotExists = function(fileSystem, folder) {
 	}
 	fileSystem.CreateFolder(folder);
     }
-}
-
-var extractBaseName = function(location) {
-    return location.substring(location.lastIndexOf("\\") + 1, location.length);
 };
 
-var makeMp3Filename = function(destFolder, track) {
-    var mp3File = destFolder + "\\" + extractBaseName(track.Location);
-    return mp3File.substring(0, mp3File.length - 3) + "mp3";
+var makeDestFileName = function(destination, track, i) {
+    return destination + "\\" + numToStr(i) + " - " + replaceIllegalFileChars(track.Artist) + " - " + replaceIllegalFileChars(track.Name) + ".mp3";
 };
 
-var copy = function(tracks, copyFn, playlistWriter) {
-    for ( var i = 1; i <= tracks.Count; i++) {
-	var track = tracks.Item(i);
-	var destFileBaseName = copyFn(track);
-	if(playlistWriter) {
-	    playlistWriter.writeTrack(track, destFileBaseName);
-	}
+var numToStr = function(i) {
+    if (i < 10)  {
+	return "0" + i;
+    } else {
+	return "" + i;
     }
+};
+
+var replaceIllegalFileChars = function(fileNamePart) {
+    var illegalFileChars = /[<>:"\/\\|\?\*]/g;
+    if (illegalFileChars.test(fileNamePart)) {
+	return fileNamePart.replace(illegalFileChars, "_");
+    }
+    return fileNamePart;
+};
+
+var copy = function(tracks, copyFn, observer) {
+    var trackSeq = makeTrackSeq(tracks);
+    copyFn(trackSeq);
+    if (observer) {
+	observer.onFinish();
+    }
+};
+
+var makeTrackSeq = function(tracks) {
+    var _makeTrackSeq = function(tracks, i) {
+	return {
+	    rest: function() {
+		if (i < tracks.Count) {
+		    return _makeTrackSeq(tracks, i+1);
+		}
+	    },
+	    first: function() {
+		return tracks.Item(i);
+	    },
+	    index: function() {
+		return i;
+	    }
+	};
+    };
+    return _makeTrackSeq(tracks, 1);
+};
+
+var copyPlaylist = function(playlist, copyFn) {
+    copy(playlist.Tracks, copyFn, observer);
 };
 
 var selectedTracksFrom = function(musicLibrary) {
@@ -75,5 +80,8 @@ var selectedTracksFrom = function(musicLibrary) {
 };
 
 var selectedPlaylistFrom = function(musicLibrary) {
-    return musicLibrary.BrowserWindow.SelectedPlaylist;
+    var playlist = musicLibrary.BrowserWindow.SelectedPlaylist;
+    if (playlist.Kind == 2) {
+	return playlist;
+    }
 };
