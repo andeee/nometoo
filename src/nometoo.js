@@ -44,8 +44,7 @@ var replaceIllegalFileChars = function(fileNamePart) {
     return fileNamePart;
 };
 
-var copy = function(tracks, copyFn, observer) {
-    var trackSeq = makeTrackSeq(tracks);
+var copy = function(trackSeq, copyFn, observer) {
     copyFn(trackSeq);
     if (observer) {
 	observer.onFinish();
@@ -71,8 +70,23 @@ var makeTrackSeq = function(tracks) {
     return _makeTrackSeq(tracks, 1);
 };
 
-var copyPlaylist = function(playlist, copyFn) {
-    copy(playlist.Tracks, copyFn, observer);
+var makeReverseTrackSeq = function(tracks) {
+    var _makeReverseTrackSeq = function(tracks, i) {
+	return {
+	    rest: function() {
+		if (i > 1) {
+		    return _makeReverseTrackSeq(tracks, i-1);
+		}
+	    },
+	    first: function() {
+		return tracks.Item(i);
+	    },
+	    index: function() {
+		return tracks.Count - i + 1;
+	    }
+	};
+    };
+    return _makeReverseTrackSeq(tracks, tracks.Count);
 };
 
 var selectedTracksFrom = function(musicLibrary) {

@@ -13,7 +13,13 @@ $(function() {
     };
 
     var startCopy = function(targetFolder) {
-	copy(selectedTracksFrom(iTunes), makeCopyFn(targetFolder, fileSystem, shell), observer);
+	var playlist = selectedPlaylistFrom(iTunes);
+	var copyFn = makeCopyFn(targetFolder, fileSystem, shell);
+	if (playlist) {
+	    copy(makeTrackSeq(playlist.Tracks), copyFn, observer);
+	} else {
+	    copy(makeReverseTrackSeq(selectedTracksFrom(iTunes)), copyFn, observer);
+	}
     };
 
     $("#copyForm").submit(function(e) {
