@@ -1,9 +1,12 @@
 var makeCopyFn = function(destination, fileSystem, shell) {
-    return function(trackSeq) {
+    return function(trackSeq, observer) {
 	if (trackSeq) {
 	    createFolderIfNotExists(fileSystem, destination);
 	    var track = trackSeq.first();
 	    var destFile = makeDestFileName(destination, track, trackSeq.index());
+	    if (observer) {
+		observer.onCopy(track, trackSeq.index(), trackSeq.count());
+	    }
 	    if (track.Location.toLowerCase().indexOf("mp3") > -1) {
 		fileSystem.CopyFile(track.Location, destFile, true);
 	    } else {
@@ -45,7 +48,7 @@ var replaceIllegalFileChars = function(fileNamePart) {
 };
 
 var copy = function(trackSeq, copyFn, observer) {
-    copyFn(trackSeq);
+    copyFn(trackSeq, observer);
     if (observer) {
 	observer.onFinish();
     }
@@ -64,6 +67,9 @@ var makeTrackSeq = function(tracks) {
 	    },
 	    index: function() {
 		return i;
+	    },
+	    count: function() {
+		return tracks.Count();
 	    }
 	};
     };
@@ -83,6 +89,9 @@ var makeReverseTrackSeq = function(tracks) {
 	    },
 	    index: function() {
 		return tracks.Count - i + 1;
+	    },
+	    count: function() {
+		return tracks.Count;
 	    }
 	};
     };
