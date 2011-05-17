@@ -49,10 +49,12 @@ var replaceIllegalFileChars = function(fileNamePart) {
 };
 
 var copy = function(trackSeq, copyFn, observer) {
-    setTimeout(function() { copyFn(trackSeq, observer) }, 25);
-    if (observer) {
-	observer.onFinish();
-    }
+    setTimeout(function() { 
+	copyFn(trackSeq, observer);
+	if (observer) {
+	    observer.onFinish();
+	}
+    }, 25);
 };
 
 var makeTrackSeq = function(tracks) {
@@ -70,7 +72,7 @@ var makeTrackSeq = function(tracks) {
 		return i;
 	    },
 	    count: function() {
-		return tracks.Count();
+		return tracks.Count;
 	    }
 	};
     };
