@@ -5,7 +5,7 @@ $(function() {
 
     var observer = {
 	onCopy: function(i, count, track) {
-	    $("#progress").html("kopiere " + track.Location);
+	    $("#progress").html("kopiere " + (i + 1) + " von " + count);
 	},
 	onFinish: function() {
 	    $("#progress").html("kopieren abgeschlossen!");

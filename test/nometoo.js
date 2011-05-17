@@ -69,23 +69,29 @@ var makeShell = function() {
 
 module("track copying");
 
-test("copies selected tracks from iTunes to destination", function() {
+asyncTest("copies selected tracks from iTunes to destination", function() {
     var fileSystem = makeFileSystem();
     var shell = makeShell();
     var copyFn = makeCopyFn("f:", fileSystem, shell);
     copy(makeReverseTrackSeq(selectedTracksFrom(iTunes)), copyFn);
-    assertThat(fileSystem.copied.length, is(1));
-    assertThat(fileSystem.copied[0].source, is(track.Location));
-    assertThat(fileSystem.copied[0].destination, is("f:\\02 - Disturbed - Another Way To Die.mp3"));
+    setTimeout(function() {
+	start();
+	assertThat(fileSystem.copied.length, is(1));
+	assertThat(fileSystem.copied[0].source, is(track.Location));
+	assertThat(fileSystem.copied[0].destination, is("f:\\02 - Disturbed - Another Way To Die.mp3"));
+    }, 100);
 });
 
-test("transcodes aac track from iTunes to destination", function() {
+asyncTest("transcodes aac track from iTunes to destination", function() {
     var fileSystem = makeFileSystem();
     var shell = makeShell();
     var copyFn = makeCopyFn("f:", fileSystem, shell);
     copy(makeReverseTrackSeq(selectedTracksFrom(iTunes)), copyFn);
-    assertThat(shell.runcmd, startsWith("ffmpeg -i"));
-    assertThat(shell.runcmd, containsString("-map_meta_data \"f:\\01 - Disturbed - Asylum.mp3\":\"c:\\test\\02 - Asylum.m4a\""));
+    setTimeout(function() {
+	start();
+	assertThat(shell.runcmd, startsWith("ffmpeg -i"));
+	assertThat(shell.runcmd, containsString("-map_meta_data \"f:\\01 - Disturbed - Asylum.mp3\":\"c:\\test\\02 - Asylum.m4a\""));
+    }, 100);
 });
 
 test("copies selected playlist from iTunes to destination", function() {
@@ -94,9 +100,12 @@ test("copies selected playlist from iTunes to destination", function() {
     var playlist = selectedPlaylistFrom(iTunes);
     var copyFn = makeCopyFn("f:", fileSystem, shell);
     copy(makeTrackSeq(playlist.Tracks), copyFn);
-    assertThat(fileSystem.copied.length, is(1));
-    assertThat(fileSystem.copied[0].source, is(track.Location));
-    assertThat(fileSystem.copied[0].destination, is("f:\\01 - Disturbed - Another Way To Die.mp3"));
+    setTimeout(function() {
+	start();
+	assertThat(fileSystem.copied.length, is(1));
+	assertThat(fileSystem.copied[0].source, is(track.Location));
+	assertThat(fileSystem.copied[0].destination, is("f:\\01 - Disturbed - Another Way To Die.mp3"));
+    }, 100);
 });
 
 

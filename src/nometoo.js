@@ -12,7 +12,8 @@ var makeCopyFn = function(destination, fileSystem, shell) {
 	    } else {
 		shell.Run("ffmpeg -i \"" + track.Location + "\" -y -acodec libmp3lame -ac 2 -ab 256000 \"" + destFile + "\" -map_meta_data \"" + destFile + "\":\"" + track.Location + "\"", 0, true);
 	    }
-	    arguments.callee(trackSeq.rest());
+	    var selfFunc = arguments.callee;
+	    setTimeout(function () { selfFunc(trackSeq.rest()) }, 25);
 	}
     };
 };
@@ -48,7 +49,7 @@ var replaceIllegalFileChars = function(fileNamePart) {
 };
 
 var copy = function(trackSeq, copyFn, observer) {
-    copyFn(trackSeq, observer);
+    setTimeout(function() { copyFn(trackSeq, observer) }, 25);
     if (observer) {
 	observer.onFinish();
     }
