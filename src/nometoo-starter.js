@@ -14,11 +14,16 @@ $(function() {
 
     var startCopy = function(targetFolder) {
 	var playlist = selectedPlaylistFrom(iTunes);
+	var selectedTracks = selectedTracksFrom(iTunes);
 	var copyFn = makeCopyFn(targetFolder, fileSystem, shell);
-	if (playlist) {
-	    copy(makeTrackSeq(playlist.Tracks), copyFn, observer);
+	if (selectedTracks) {
+	    copy(makeTrackSeq(selectedTracks), copyFn, observer);
 	} else {
-	    copy(makeReverseTrackSeq(selectedTracksFrom(iTunes)), copyFn, observer);
+	    if (playlist) {
+		copy(makeTrackSeq(playlist.Tracks), copyFn, observer);
+	    } else {
+		$("#progress").html("keine Playlist oder Titel ausgewählt!");	    
+	    }
 	}
     };
 
