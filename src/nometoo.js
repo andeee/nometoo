@@ -5,7 +5,7 @@ var makeCopyFn = function(destination, fileSystem, shell) {
 	    var track = trackSeq.first();
 	    var destFile = makeDestFileName(destination, track, trackSeq.index());
 	    if (observer) {
-		observer.onCopy(track, trackSeq.index(), trackSeq.count());
+		observer.onCopy(trackSeq.index(), trackSeq.count(), track);
 	    }
 	    if (track.Location.toLowerCase().indexOf("mp3") > -1) {
 		fileSystem.CopyFile(track.Location, destFile, true);
